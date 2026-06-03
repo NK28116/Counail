@@ -49,7 +49,7 @@ CREATE TABLE consensus_results (
     created_at    TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at    TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-CREATE INDEX idx_consensus_results_session_id ON consensus_results(session_id);
+CREATE UNIQUE INDEX idx_consensus_results_session_id ON consensus_results(session_id);
 
 -- update_updated_at_column() is already created by 00001_initial_schema.sql.
 -- debate_messages is treated as an append-only log so it has no updated_at trigger.
