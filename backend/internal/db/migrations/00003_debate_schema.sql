@@ -31,7 +31,7 @@ CREATE INDEX idx_debate_sessions_status  ON debate_sessions(status);
 CREATE TABLE debate_messages (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     session_id      UUID         NOT NULL REFERENCES debate_sessions(id) ON DELETE CASCADE,
-    agent_id        UUID         NOT NULL REFERENCES agent_configs(id) ON DELETE RESTRICT,
+    agent_id        UUID         NOT NULL REFERENCES agent_configs(id) ON DELETE CASCADE,
     role            VARCHAR(50)  NOT NULL,
     content         TEXT         NOT NULL,
     review_targets  JSONB,
