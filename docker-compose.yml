@@ -1,0 +1,24 @@
+# Local development stack. Spin up with:
+#
+#     docker compose up -d redis
+#
+# Production Redis lives on Upstash (provisioned in Phase 7); see
+# backend/.env.example for the REDIS_URL contract.
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: counail-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  redis-data:
