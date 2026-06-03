@@ -11,13 +11,15 @@ func TestMigrationsFS_HasExpectedFiles(t *testing.T) {
 	if err != nil {
 		t.Fatalf("read embedded migrations dir: %v", err)
 	}
-	if got, want := len(entries), 2; got != want {
+	if got, want := len(entries), 4; got != want {
 		t.Fatalf("migration file count: got %d, want %d", got, want)
 	}
 
 	want := []string{
 		"00001_initial_schema.sql",
 		"00002_enable_rls.sql",
+		"00003_debate_schema.sql",
+		"00004_debate_rls.sql",
 	}
 	for i, e := range entries {
 		if e.Name() != want[i] {
