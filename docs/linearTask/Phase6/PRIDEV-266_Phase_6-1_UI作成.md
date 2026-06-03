@@ -1,4 +1,4 @@
-# PRIDEV-266 - Phase 2-5 UI作成
+# PRIDEV-266 - Phase 6-1 UI作成
 
 ## メタ情報
 
