@@ -13,8 +13,9 @@ import (
 // Defaults are tuned for local development; production overrides the values
 // through environment variables (see .env.example for the contract).
 type Config struct {
-	Port     string `envconfig:"PORT" default:"8080"`
-	LogLevel string `envconfig:"LOG_LEVEL" default:"info"`
+	Port        string `envconfig:"PORT" default:"8080"`
+	LogLevel    string `envconfig:"LOG_LEVEL" default:"info"`
+	DatabaseURL string `envconfig:"DATABASE_URL"`
 }
 
 // Load reads environment variables into a Config.
