@@ -16,6 +16,7 @@ type Config struct {
 	Port        string `envconfig:"PORT" default:"8080"`
 	LogLevel    string `envconfig:"LOG_LEVEL" default:"info"`
 	DatabaseURL string `envconfig:"DATABASE_URL"`
+	RedisURL    string `envconfig:"REDIS_URL"`
 }
 
 // Load reads environment variables into a Config.
