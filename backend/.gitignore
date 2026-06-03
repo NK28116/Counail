@@ -1,0 +1,11 @@
+# Compiled binaries
+/server
+*.exe
+*.test
+*.out
+
+# Coverage
+coverage.out
+
+# Local environment
+.env
