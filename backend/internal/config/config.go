@@ -28,6 +28,12 @@ func Load() (*Config, error) {
 	if err := envconfig.Process("", &c); err != nil {
 		return nil, err
 	}
+	// envconfig splits ALLOWED_ORIGINS on commas but does not trim whitespace,
+	// so "http://a, http://b" would otherwise leave a leading space that fails
+	// to match browser Origin headers.
+	for i, o := range c.AllowedOrigins {
+		c.AllowedOrigins[i] = strings.TrimSpace(o)
+	}
 	return &c, nil
 }
 
