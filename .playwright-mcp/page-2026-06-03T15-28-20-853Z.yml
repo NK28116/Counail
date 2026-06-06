@@ -1,0 +1,7 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - heading "Backend connectivity check" [level=1] [ref=e3]
+    - generic [ref=e4]:
+      - paragraph [ref=e5]: Backend unreachable
+      - paragraph [ref=e6]: Failed to fetch
+  - alert [ref=e7]
