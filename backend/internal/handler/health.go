@@ -14,6 +14,9 @@ import (
 // HTTP surface.
 func RegisterRoutes(r *gin.Engine) {
 	r.GET("/healthz", Health)
+
+	v1 := r.Group("/api/v1")
+	v1.GET("/ping", Ping)
 }
 
 // Health responds with the server's liveness status.

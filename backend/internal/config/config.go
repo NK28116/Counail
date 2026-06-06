@@ -13,10 +13,13 @@ import (
 // Defaults are tuned for local development; production overrides the values
 // through environment variables (see .env.example for the contract).
 type Config struct {
-	Port        string `envconfig:"PORT" default:"8080"`
-	LogLevel    string `envconfig:"LOG_LEVEL" default:"info"`
-	DatabaseURL string `envconfig:"DATABASE_URL"`
-	RedisURL    string `envconfig:"REDIS_URL"`
+	Port        string   `envconfig:"PORT" default:"8080"`
+	LogLevel    string   `envconfig:"LOG_LEVEL" default:"info"`
+	DatabaseURL string   `envconfig:"DATABASE_URL"`
+	RedisURL    string   `envconfig:"REDIS_URL"`
+	// AllowedOrigins enumerates Origin headers the API will accept from
+	// browsers. Default is the Next.js dev server.
+	AllowedOrigins []string `envconfig:"ALLOWED_ORIGINS" default:"http://localhost:3000"`
 }
 
 // Load reads environment variables into a Config.
@@ -24,6 +27,12 @@ func Load() (*Config, error) {
 	var c Config
 	if err := envconfig.Process("", &c); err != nil {
 		return nil, err
+	}
+	// envconfig splits ALLOWED_ORIGINS on commas but does not trim whitespace,
+	// so "http://a, http://b" would otherwise leave a leading space that fails
+	// to match browser Origin headers.
+	for i, o := range c.AllowedOrigins {
+		c.AllowedOrigins[i] = strings.TrimSpace(o)
 	}
 	return &c, nil
 }

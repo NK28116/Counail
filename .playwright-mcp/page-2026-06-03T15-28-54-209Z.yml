@@ -1,0 +1,11 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - heading "Backend connectivity check" [level=1] [ref=e3]
+    - generic [ref=e4]:
+      - paragraph [ref=e5]: Backend reachable
+      - generic [ref=e6]:
+        - term [ref=e7]: service
+        - definition [ref=e8]: counail-backend
+        - term [ref=e9]: message
+        - definition [ref=e10]: pong
+  - alert [ref=e11]
