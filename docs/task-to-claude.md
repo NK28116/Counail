@@ -1,34 +1,44 @@
-# Claudeへの指示書: Linear Task作成
+# Claudeへの指示書: Phase 1-7 ローカル開発環境コンテナ化・CI設定
 
 ## 1. 概要
-本ドキュメントは、実装AI（Claude）に対するLinear上のタスク（Issue）作成指示書である。
+本タスクは、ポートフォリオとしての技術的信頼性の向上と、AI主導開発における「安全網（自動デグレ検知）」の構築を目的とした、自動テスト（CI）環境およびバックエンドのコンテナ化の実装です。
 
-## 2. 前提条件と参照ドキュメント
-- **要件定義書**: [specification.md](file:///Users/niwa_kazuhiro/Documents/PrivateDevelop/Counail/docs/specification.md)
-- **実装方針および詳細設計**: [design.md](file:///Users/niwa_kazuhiro/Documents/PrivateDevelop/Counail/docs/design.md)
-- **適用プロンプト**: [create_linear_task.md](file:///Users/niwa_kazuhiro/Documents/PrivateDevelop/Counail/prompts/claude/create_linear_task.md)
+## 2. 対象フェーズ
+[Phase 1-7] ローカル開発環境コンテナ化・CI設定 (Docker & CI/CD)
 
-## 3. 指示内容
-以下のLinearプロジェクトに対して、[design.md](file:///Users/niwa_kazuhiro/Documents/PrivateDevelop/Counail/docs/design.md) に示された開発フェーズに基づき、タスク（Issue）の作成および紐付けを行ってください。
+## 3. 実装要件（やるべきこと）
 
-- **対象Linearプロジェクト**: `https://linear.app/niwa-private-dev/project/counail-324a14bfe713/overview`
-  - *プロジェクト名またはID*: `counail-324a14bfe713`
+### ① GitHub Actions による CIパイプライン構築
+フロントエンドとバックエンドで独立したワークフローを作成し、Pull Request 作成時や `main` ブランチへの Push 時に自動で品質チェックが走るようにしてください。
 
-### タスク作成時のルール
-1. **フェーズごとの分割**: [design.md](file:///Users/niwa_kazuhiro/Documents/PrivateDevelop/Counail/docs/design.md) のフェーズ1からフェーズ7までの開発ステップを網羅してください。
-2. **適切な粒度**: 1つのタスクが0.5時間〜2時間程度で完了でき、テスト可能なサイズ（1ファイルまたは1機能単位）に細分化してください。
-3. **タスク情報の記述**:
-   - **タイトル**: 具体的かつ明快なアクション（例: 「[Phase 1] Supabase データベーススキーマの定義とマイグレーション適用」）
-   - **説明**: 実装する内容の詳細と、関連する [design.md](file:///Users/niwa_kazuhiro/Documents/PrivateDevelop/Counail/docs/design.md) のセクションへの言及。
-   - **受け入れ条件**: 完了定義（DoD）（例: 「正常系テストがパスする」「APIキーの暗号化検証ができる」）
-   - **依存関係**: 先行タスクを設定できる場合は指定。
-4. **優先度と順序付け**: タイトルの先頭に `[Phase X]` などの識別子を付け、実装順序を明確にしてください。
+**バックエンドCI (`.github/workflows/backend-ci.yml`)**
+- 対象トリガー: `backend/**` 配下のファイルに変更があった場合
+- 実行内容:
+  - Go環境のセットアップ (1.25.7)
+  - 依存関係のダウンロード
+  - フォーマットとLint検証 (`go fmt ./...`, `go vet ./...`)
+  - テスト実行 (`go test -v ./...`)
 
-## 4. 追加指示: 重複・非推奨となったドキュメントの物理削除
-ドキュメントの再構築に伴い、以下のファイルは中身が他ドキュメントに統合され不要となりました。実装エージェント（Claude等）は、Linearタスク作成処理の実行時に、以下のファイルをファイルシステム上から物理削除（削除コマンド等）してください。
+**フロントエンドCI (`.github/workflows/frontend-ci.yml`)**
+- 対象トリガー: `frontend/**` 配下のファイルに変更があった場合
+- 実行内容:
+  - Node.js環境のセットアップ
+  - 依存関係のクリーンインストール (`npm ci`)
+  - Lintチェック (`npm run lint`)
+  - ビルドテストまたは型チェック (`npm run build` または `npx tsc --noEmit`)
 
-- `docs/coding-standards.md` （`docs/design.md` へ統合済み）
-- `docs/ci-cd.md` （`docs/release-strategy.md` へ統合済み）
-- `docs/ai-rules.md` （`docs/ai-trinity-protocol.md` へ統合済み）
-- `docs/workflow.md` （`docs/ai-trinity-protocol.md` へ統合済み）
+### ② バックエンド (Go) の Dockerfile 作成
+将来的な Cloud Run 等への商用デプロイを見据え、バックエンド用の本番向け Dockerfile を作成してください。
+- **配置場所**: `backend/Dockerfile`, `backend/.dockerignore`
+- **要件**:
+  - マルチステージビルドを採用し、最終イメージのサイズを最小化する（例: ビルド用イメージからバイナリのみを `alpine` や `distroless` 等へコピー）。
+  - `.env` などの秘匿情報や不要なディレクトリがコンテナイメージに混入しないよう、適切に `.dockerignore` を設定する。
+  - プロセスが不要に root 権限で実行されないようなセキュリティ配慮（非rootユーザーの指定など）を可能な限り含める。
 
+### ③ フロントエンドのコンテナ化（今回は対象外）
+- フロントエンド（Next.js）は Vercel への直接連携によるデプロイを想定しているため、Dockerfile の作成は **不要** です。
+
+## 4. 作業完了の定義 (DoD)
+1. `.github/workflows/` 以下にフロントエンド・バックエンドそれぞれのCI設定用 yml ファイルが生成されていること。
+2. `backend/` 配下に `Dockerfile` と `.dockerignore` がベストプラクティスに沿って生成されていること。
+3. 以上の変更をコミットし、リモートリポジトリへ Push すること。
