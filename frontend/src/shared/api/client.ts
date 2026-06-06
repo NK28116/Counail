@@ -5,7 +5,13 @@
 // production. Falls back to the dev-server default so a fresh clone "just
 // works" without touching .env.local.
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
+// `??` would accept an empty string and silently route requests to the Next.js
+// origin instead of the Go backend, so treat blank values as unset before
+// picking the fallback. Trailing slashes are stripped to keep path joining
+// safe against e.g. "http://host/" producing "//api/v1/ping".
+const envUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.trim() || "";
+const rawBaseUrl = envUrl === "" ? "http://localhost:8080" : envUrl;
+const API_BASE_URL = rawBaseUrl.replace(/\/+$/, "");
 
 export type PingResponse = {
   message: string;
