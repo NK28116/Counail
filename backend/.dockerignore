@@ -1,0 +1,35 @@
+# Keep the build context (and therefore the image) small, and make sure no
+# host-side secret or local-only artifact can leak into a layer.
+
+# VCS metadata
+.git
+.gitignore
+.gitattributes
+
+# Local environment / secrets — .env.example stays so contributors can see the
+# contract without exposing real values.
+.env
+.env.*
+!.env.example
+
+# Docker plumbing should not be part of the context it describes.
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Editor & OS noise
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+
+# Go build / test artifacts that would otherwise pollute layers
+bin
+dist
+coverage.out
+*.test
+**/testdata
+
+# Docs / repo-management files unnecessary for the runtime image
+README.md
+*.md
