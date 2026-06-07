@@ -1,0 +1,27 @@
+# Local Terraform working directories
+.terraform/
+.terraform.tfstate.lock.info
+
+# State files (may contain secrets) — must never be committed to a public repo
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Variable definition files (likely to contain secrets / per-environment values)
+*.tfvars
+*.tfvars.json
+
+# Local CLI configuration overrides
+.terraformrc
+terraform.rc
+
+# Plan output / override files
+*tfplan*
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json

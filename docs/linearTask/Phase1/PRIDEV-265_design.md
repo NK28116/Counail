@@ -16,7 +16,7 @@
 モノリポのルートディレクトリ配下に、インフラ管理専用のディレクトリを作成する。
 
 - 新規作成するディレクトリ・ファイル:
-  - `infrastructure/terraform/`
+  - `terraform/`
     - `main.tf`: プロバイダー設定、および最低限のベースリソース定義
     - `variables.tf`: 環境ごとに変動するパラメータの変数定義
     - `outputs.tf`: 作成されたリソースのエンドポイント等の出力定義
@@ -46,8 +46,8 @@
 本要件を Claude（実装AI）に委譲するためのタスク分割（Issue化）案。
 
 1. **[Phase 1-7: Task A] Terraformの初期ディレクトリ構成とベースファイルの作成**
-   - `infrastructure/terraform/` ディレクトリと、`main.tf`, `variables.tf`, `outputs.tf`, `providers.tf` の空または最小構成ファイルを作成する。
+   - `terraform/` ディレクトリと、`main.tf`, `variables.tf`, `outputs.tf`, `providers.tf` の空または最小構成ファイルを作成する。
 2. **[Phase 1-7: Task B] `.gitignore`の更新とセキュリティ対策**
    - プロジェクトルートの `.gitignore` を更新し、`.tfstate` や `.tfvars` など、シークレットを含む可能性のあるTerraform自動生成ファイルがGit管理下に入らないように設定する。
 3. **[Phase 1-7: Task C] READMEへのIaC利用ガイドラインの追加**
-   - OSS利用者が環境を立ち上げる際の `terraform` コマンドライン手順（init, plan, apply 等）をドキュメント化し、`infrastructure/README.md` を作成する。
+   - OSS利用者が環境を立ち上げる際の `terraform` コマンドライン手順（init, plan, apply 等）をドキュメント化し、`terraform/README.md` を作成する。
