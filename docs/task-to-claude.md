@@ -36,3 +36,13 @@ OSS公開を見据え、利用者が自身の環境でインフラを構築で�
 2. 構成内容がOSS化を前提とした汎用的な記述（ハードコードの排除）になっていること。
 3. 構築手順を記載した `terraform/README.md` が用意されていること。
 4. 以上の変更をコミットし、リモートリポジトリへ Push すること。
+
+## 5. 追加の修正指示 (Linter Feedback)
+以下のインフラ構築上の論理エラー（Logic Error）が指摘されていますので、合わせて修正を行ってください。
+
+- **対象ファイル**: `terraform/main.tf` および `terraform/variables.tf`
+- **指摘内容**:
+  Terraform で `google_project_service` を使用して各種APIを有効化する際、そもそもそれを実行するための `Service Usage API (serviceusage.googleapis.com)` が有効になっていないと最初の apply がエラーで失敗してしまいます（作成したての新規GCPプロジェクトの場合）。
+- **対応要件**:
+  `variables.tf` の `enabled_services` のデフォルトリストに `serviceusage.googleapis.com` を追加してください。
+  さらに `main.tf` 内で、他のAPIを一括有効化する処理の前に、依存元として `serviceusage.googleapis.com` を確実に有効化する（Bootstrap step を設けるか、`depends_on` を活用する）ように実装を修正してください。
