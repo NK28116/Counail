@@ -6,13 +6,27 @@ locals {
   }
 }
 
+# Bootstrap: Service Usage API must be enabled before any other
+# google_project_service resource can succeed on a fresh GCP project.
+resource "google_project_service" "service_usage" {
+  project = var.project_id
+  service = "serviceusage.googleapis.com"
+
+  disable_on_destroy = false
+}
+
 resource "google_project_service" "enabled" {
-  for_each = toset(var.enabled_services)
+  for_each = toset([
+    for service in var.enabled_services : service
+    if service != "serviceusage.googleapis.com"
+  ])
 
   project = var.project_id
   service = each.value
 
   disable_on_destroy = false
+
+  depends_on = [google_project_service.service_usage]
 }
 
 resource "google_artifact_registry_repository" "backend" {
